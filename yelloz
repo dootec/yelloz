@@ -1,0 +1,91 @@
+#!/bin/bash
+
+action=$1
+confir=$2
+
+welcome () {
+	clear
+	printf "\n***** Bluetooth Booster | yelloz *****\n\n"
+	printf "Master: https://github.com/dootec\n"
+	printf "Stable Version: 1.0.0\n\n"
+	printf "Enter a number to select the action:\n"
+	printf "\n\t[1] : Improve Bluetooth Power With Bluez5\n\t[2] : Reset to default setting\n\n"
+}
+
+install () {
+	sudo sed -i 's/#IdleTimeout=30/IdleTimeout=0/g' /etc/bluetooth/input.conf
+	sudo sed -i 's/#UserspaceHID=true/UserspaceHID=true/g' /etc/bluetooth/input.conf
+	echo ""
+	echo "Installation is successfully."
+	echo "Now, you have to reboot your computer."
+	echo ""
+	echo "Have a nice day."
+	echo ""
+}
+
+
+uninstall () {
+	sudo sed -i 's/IdleTimeout=0/#IdleTimeout=30/g' /etc/bluetooth/input.conf
+	sudo sed -i 's/UserspaceHID=true/#UserspaceHID=true/g' /etc/bluetooth/input.conf
+	echo ""
+	echo "Uninstallation is successfully."
+	echo "Now, you have to reboot your computer."
+	echo ""
+	echo "Have a nice day."
+	echo ""
+}
+
+doYouApproveTheInstallation () {
+	read -p "Do you approve the installation? (Y/n) : " confir
+	if [[ $confir == "y" ]]; then
+		echo "Installation is begin."
+		install
+	else
+		echo "No action taken, good day."
+	fi
+}
+
+doYouApproveTheUninstallation () {
+	read -p "Do you approve the uninstallation? (Y/n) : " confir
+	if [[ $confir == "y" ]]; then
+		echo "Uninstallation is begin."
+		uninstall
+	else
+		echo "No action taken, good day."
+	fi
+}
+
+yelloz () {
+	if [[ $action == "" ]] && [[ $confir == "" ]]; then
+		welcome
+		read -p "Pick a number (1/2) : " action
+		if [[ $action == "1" ]]; then
+			doYouApproveTheInstallation
+		elif [[ $action == "2" ]]; then
+			doYouApproveTheUninstallation
+		else
+			echo "No action taken, good day."
+		fi
+	else
+		if [[ $action == "1" ]]; then
+			if [[ $confir == "-y" ]]; then
+				echo "Quick mode is on, installation is begin."
+				install
+			else
+				doYouApproveTheInstallation
+			fi
+		elif [[ $action == "2" ]]; then
+			if [[ $confir == "-y" ]]; then
+				echo "Quick mode is on, uninstallation is begin."
+				uninstall
+			else
+				doYouApproveTheUninstallation
+			fi
+		else
+			echo "No action taken, good day."
+		fi
+	fi
+}
+
+yelloz
+
