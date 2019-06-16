@@ -7,12 +7,21 @@ welcome () {
 	clear
 	printf "\n***** Bluetooth Booster | yelloz *****\n\n"
 	printf "Master: https://github.com/dootec\n"
-	printf "Stable Version: 1.0.0\n\n"
+	printf "Exerimental Version: 1.0.0-e\n\n"
 	printf "Enter a number to select the action:\n"
 	printf "\n\t[1] : Improve Bluetooth Power With Bluez5\n\t[2] : Reset to default setting\n\n"
 }
 
 install () {
+	sudo apt update
+	sudo add-apt-repository ppa:bluetooth/bluez -y
+	sudo apt update
+	sudo apt install bluez -y
+	sudo apt install blueman -y
+	sudo apt install pulseaudio -y
+	sudo apt update
+	sudo sed -i 's/.ifexists module-bluetooth-discover.so/.ifexists module-bluez5-discover.so/g' /etc/pulse/default.pa
+	sudo sed -i 's/load-module module-bluetooth-discover/load-module module-bluez5-discover/g' /etc/pulse/default.pa
 	sudo sed -i 's/#IdleTimeout=30/IdleTimeout=0/g' /etc/bluetooth/input.conf
 	sudo sed -i 's/#UserspaceHID=true/UserspaceHID=true/g' /etc/bluetooth/input.conf
 	echo ""
@@ -25,6 +34,8 @@ install () {
 
 
 uninstall () {
+	sudo sed -i 's/.ifexists module-bluez5-discover.so/.ifexists module-bluetooth-discover.so/g' /etc/pulse/default.pa
+	sudo sed -i 's/load-module module-bluez5-discover/load-module module-bluetooth-discover/g' /etc/pulse/default.pa
 	sudo sed -i 's/IdleTimeout=0/#IdleTimeout=30/g' /etc/bluetooth/input.conf
 	sudo sed -i 's/UserspaceHID=true/#UserspaceHID=true/g' /etc/bluetooth/input.conf
 	echo ""
